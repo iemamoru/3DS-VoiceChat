@@ -11,6 +11,7 @@ extern u8 *micBuffer;
 constexpr u32 MIC_BUFFER_ADDR = 0x7700000;
 constexpr u32 MIC_BUFFER_SIZE = 0x30000;
 
+extern u32 *socBuffer;
 constexpr u32 SOC_BUFFER_ADDR = 0x7500000;
 constexpr u32 SOC_BUFFER_SIZE = 0x100000;
 

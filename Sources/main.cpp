@@ -97,7 +97,7 @@ exit:
 
     // This function is called when the process exits
     // Useful to save settings, undo patchs or clean up things
-    void    OnProcessExit(void) {
+    void OnProcessExit(void) {
         ToggleTouchscreenForceOn();
     }
 
@@ -115,6 +115,27 @@ exit:
             OSD::Notify("alloc micBuffer failed", red);
         else
             OSD::Notify("alloc micBuffer success", green);
+    }
+
+    void EventCallback(Process::Event event) {
+        if (event == Process::Event::EXIT){
+            if (System::IsCitra())
+            {
+                free(socBuffer);
+            }
+            else
+            {
+                MemInfo info;
+                PageInfo out;
+                svcQueryMemory(&info, &out, SOUND_BUFFER_ADDR);
+                if (info.state != MemState::MEMSTATE_FREE)
+                svcControlMemoryUnsafe(nullptr, SOUND_BUFFER_ADDR, SOUND_BUFFER_SIZE, MEMOP_FREE, MemPerm(0));
+                svcQueryMemory(&info, &out, MIC_BUFFER_ADDR);
+                if (info.state != MemState::MEMSTATE_FREE)
+                svcControlMemoryUnsafe(nullptr, MIC_BUFFER_ADDR, MIC_BUFFER_SIZE, MEMOP_FREE, MemPerm(0));
+                micExit();
+            }
+        }
     }
 
     void    InitMenu(PluginMenu &menu)
