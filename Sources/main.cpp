@@ -1,14 +1,14 @@
 #include <3ds.h>
 #include "csvc.h"
 #include <CTRPluginFramework.hpp>
+#include "buffers.h"
 
 #include <vector>
 
 namespace CTRPluginFramework
 {
     // This patch the NFC disabling the touchscreen when scanning an amiibo, which prevents ctrpf to be used
-    static void    ToggleTouchscreenForceOn(void)
-    {
+    static void    ToggleTouchscreenForceOn(void) {
         static u32 original = 0;
         static u32 *patchAddress = nullptr;
 
@@ -55,32 +55,36 @@ exit:
 
     // This function is called before main and before the game starts
     // Useful to do code edits safely
-    void    PatchProcess(FwkSettings &settings)
-    {
+    void    PatchProcess(FwkSettings &settings) {
         ToggleTouchscreenForceOn();
     }
 
     // This function is called when the process exits
     // Useful to save settings, undo patchs or clean up things
-    void    OnProcessExit(void)
-    {
+    void    OnProcessExit(void) {
         ToggleTouchscreenForceOn();
+    }
+
+    void InitializeSockets(void) {
+        Result ret = RL_SUCCESS;
+        Color red = Color::Red;
+        Color green = Color::Green;
+
+        ret = svcControlMemoryUnsafe((u32 *)&soundBuffer, SOUND_BUFFER_ADDR, SOUND_BUFFER_SIZE, MemOp(MEMOP_REGION_SYSTEM | MEMOP_ALLOC), MemPerm(MEMPERM_READ | MEMPERM_WRITE));
+        if (R_FAILED(ret) || !soundBuffer)
+            OSD::Notify("alloc soundBuffer failed", red);
+        else
+            OSD::Notify("alloc soundBuffer success", green);
+
+        ret = svcControlMemoryUnsafe((u32 *)&micBuffer, MIC_BUFFER_ADDR, MIC_BUFFER_SIZE, MemOp(MEMOP_REGION_SYSTEM | MEMOP_ALLOC), MemPerm(MEMPERM_READ | MEMPERM_WRITE));
+        if (R_FAILED(ret) || !micBuffer)
+            OSD::Notify("alloc micBuffer failed", red);
+        else
+            OSD::Notify("alloc micBuffer success", green);
     }
 
     void    InitMenu(PluginMenu &menu)
     {
-        // Create your entries here, or elsewhere
-        // You can create your entries whenever/wherever you feel like it
-        
-        // Example entry
-        /*menu += new MenuEntry("Test", nullptr, [](MenuEntry *entry)
-        {
-            std::string body("What's the answer ?\n");
-
-            body += std::to_string(42);
-
-            MessageBox("UA", body)();
-        });*/
     }
 
     int     main(void)
