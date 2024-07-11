@@ -89,21 +89,17 @@ exit:
 
     int     main(void)
     {
-        PluginMenu *menu = new PluginMenu("Action Replay", 0, 7, 4,
-                                            "A blank template plugin.\nGives you access to the ActionReplay and others tools.");
+        PluginMenu *menu = new PluginMenu("3DS-VoiceChat", 0, 0, 1,
+                                            "3DSでボイスチャットをするためのCTRPFです。");
 
-        // Synnchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
 
-        // Init our menu entries & folders
         InitMenu(*menu);
 
-        // Launch menu and mainloop
         menu->Run();
 
         delete menu;
 
-        // Exit plugin
-        return (0);
+        return 0;
     }
 }
