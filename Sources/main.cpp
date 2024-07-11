@@ -4,6 +4,8 @@
 #include "buffers.h"
 #include "patches.h"
 #include "debug.h"
+#include "color.h"
+
 #include <vector>
 
 namespace CTRPluginFramework
@@ -101,8 +103,6 @@ exit:
 
     void InitializeSockets(void) {
         Result ret = RL_SUCCESS;
-        Color red = Color::Red;
-        Color green = Color::Green;
 
         ret = svcControlMemoryUnsafe((u32 *)&soundBuffer, SOUND_BUFFER_ADDR, SOUND_BUFFER_SIZE, MemOp(MEMOP_REGION_SYSTEM | MEMOP_ALLOC), MemPerm(MEMPERM_READ | MEMPERM_WRITE));
         if (R_FAILED(ret) || !soundBuffer)
